@@ -70,7 +70,7 @@
 <body>
 
   <div class="card">
-    <h1>Will you be my Valentine Cutie? 💖</h1>
+    <h1>Will you be my Valentine? 💖</h1>
     <div class="buttons">
       <button id="yes">Yes 💕</button>
       <button id="no">No 🙃</button>
@@ -79,55 +79,54 @@
   </div>
 
   <script>
-    const noBtn = document.getElementById('no');
-    const yesBtn = document.getElementById('yes');
-    const message = document.getElementById('message');
-    const card = document.querySelector('.card');
+  const noBtn = document.getElementById('no');
+  const yesBtn = document.getElementById('yes');
+  const message = document.getElementById('message');
+  const card = document.querySelector('.card');
 
-    let attempts = 0;
+  let attempts = 0;
 
-    function moveNoButton() {
-      const cardRect = card.getBoundingClientRect();
-      const btnRect = noBtn.getBoundingClientRect();
+  function moveNoButton() {
+    const cardRect = card.getBoundingClientRect();
+    const btnRect = noBtn.getBoundingClientRect();
 
-      const maxX = cardRect.width - btnRect.width;
-      const maxY = cardRect.height - btnRect.height;
+    const maxX = cardRect.width - btnRect.width;
+    const maxY = cardRect.height - btnRect.height;
 
-      const randomX = Math.random() * maxX;
-      const randomY = Math.random() * maxY;
+    const randomX = Math.random() * maxX;
+    const randomY = Math.random() * maxY;
 
-      noBtn.style.left = randomX + 'px';
-      noBtn.style.top = randomY + 'px';
+    noBtn.style.left = randomX + 'px';
+    noBtn.style.top = randomY + 'px';
+  }
+
+  function handleNoAttempt(e) {
+    e.preventDefault();
+    attempts++;
+
+    moveNoButton();
+
+    // shrink + fade
+    var scaleValue = Math.max(0.45, 1 - attempts * 0.15);
+    noBtn.style.transform = 'scale(' + scaleValue + ')';
+    noBtn.style.opacity = Math.max(0.35, 1 - attempts * 0.2);
+
+    // turn into YES after 3 tries
+    if (attempts >= 3) {
+      noBtn.innerText = 'Yes 💕';
+      noBtn.style.background = '#ff4d6d';
     }
+  }
 
-    noBtn.addEventListener('touchstart', () => {
-      attempts++;
+  // works on mobile + desktop
+  noBtn.addEventListener('touchstart', handleNoAttempt);
+  noBtn.addEventListener('pointerdown', handleNoAttempt);
+  noBtn.addEventListener('mouseover', handleNoAttempt);
 
-      // Move away
-      moveNoButton();
-
-      // Make it harder to press
-      const scale = Math.max(0.5, 1 - attempts * 0.15);
-      noBtn.style.transform = `scale(${scale})`;
-      noBtn.style.opacity = Math.max(0.4, 1 - attempts * 0.2);
-
-      // After 3 attempts, turn No into Yes
-      if (attempts >= 3) {
-        noBtn.innerText = 'Yes 💕';
-        noBtn.style.background = '#ff4d6d';
-      }
-    });
-
-    noBtn.addEventListener('click', () => {
-      if (attempts >= 3) {
-        message.style.display = 'block';
-      }
-    });
-
-    yesBtn.addEventListener('click', () => {
-      message.style.display = 'block';
-    });
-  </script>
+  yesBtn.addEventListener('click', function () {
+    message.style.display = 'block';
+  });
+</script>
 
 </body>
 </html>
