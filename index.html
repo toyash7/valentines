@@ -25,11 +25,11 @@
     }
 
     .left {
-      background-image: url('tam1.jpg');
+      background-image: url('https://images.unsplash.com/photo-1517841905240-472988babdf9');
     }
 
     .right {
-      background-image: url('tam2.jpg');
+      background-image: url('https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e');
     }
 
     /* Center card */
@@ -59,7 +59,33 @@
 
     h1 {
       color: #ff4d6d;
-      margin-bottom: 25px;
+      margin-bottom: 10px;
+    }
+
+    .love-note {
+      font-size: 16px;
+      color: #444;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    .points {
+      list-style: none;
+      padding: 0;
+      margin: 10px 0 15px;
+      font-size: 15px;
+      color: #555;
+    }
+
+    .points li {
+      margin-bottom: 6px;
+    }
+
+    .funny {
+      font-size: 15px;
+      color: #ff4d6d;
+      margin-bottom: 18px;
+      font-weight: 500;
     }
 
     .buttons {
@@ -126,60 +152,89 @@
   <div class="overlay">
     <div class="card">
       <h1>Will you be my Valentine? 💖</h1>
+
+      <p class="love-note">I love you cutie 🥰<br>And I’m really lucky to have you as my GF 💕</p>
+
+      <ul class="points">
+        <li>🌸 You make my normal days feel special</li>
+        <li>😂 You laugh at my dumb jokes (most of the time)</li>
+        <li>💖 You’re my favorite notification</li>
+        <li>🤍 Life feels better with you by my side</li>
+      </ul>
+
+      <p class="funny">So… no pressure 😌<br>But will you be my Valentine?</p>
+
       <div class="buttons">
         <button id="yes">Yes 💕</button>
         <button id="no">No 🙃</button>
       </div>
-      <div class="message" id="message">Yay! I knew it 😍💘</div>
+      <div class="message" id="message">Yay! I knew it 😍💘<br>Best Valentine ever 💞</div>
     </div>
   </div>
 
   <script>
-    var noBtn = document.getElementById('no');
-    var yesBtn = document.getElementById('yes');
-    var message = document.getElementById('message');
-    var card = document.querySelector('.card');
+  var noBtn = document.getElementById('no');
+  var yesBtn = document.getElementById('yes');
+  var message = document.getElementById('message');
+  var card = document.querySelector('.card');
 
-    var attempts = 0;
+  // 🎵 AUDIO SETUP
+  var audio = new Audio('music.mp3'); // put your file inside /music folder
+  var startTime = 23; // start playing from 15 seconds
+  var endTime = 48;   // stop playing at 45 seconds
 
-    function moveNoButton() {
-      var cardRect = card.getBoundingClientRect();
-      var btnRect = noBtn.getBoundingClientRect();
+  var attempts = 0;
 
-      var maxX = cardRect.width - btnRect.width;
-      var maxY = cardRect.height - btnRect.height;
+  function moveNoButton() {
+    var cardRect = card.getBoundingClientRect();
+    var btnRect = noBtn.getBoundingClientRect();
 
-      var randomX = Math.random() * maxX;
-      var randomY = Math.random() * maxY;
+    var maxX = cardRect.width - btnRect.width;
+    var maxY = cardRect.height - btnRect.height;
 
-      noBtn.style.left = randomX + 'px';
-      noBtn.style.top = randomY + 'px';
+    var randomX = Math.random() * maxX;
+    var randomY = Math.random() * maxY;
+
+    noBtn.style.left = randomX + 'px';
+    noBtn.style.top = randomY + 'px';
+  }
+
+  function handleNoAttempt(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    attempts++;
+
+    moveNoButton();
+
+    var scaleValue = Math.max(0.16, 1 - attempts * 0.14);
+    noBtn.style.transform = 'scale(' + scaleValue + ')';
+    noBtn.style.opacity = Math.max(0.2, 1 - attempts * 0.15);
+
+    if (attempts >= 6) {
+      noBtn.style.display = 'none';
     }
+  }
 
-    function handleNoAttempt(e) {
-      e.preventDefault();
-      attempts++;
+  noBtn.addEventListener('touchstart', handleNoAttempt);
+  noBtn.addEventListener('pointerdown', handleNoAttempt);
+  noBtn.addEventListener('mouseover', handleNoAttempt);
 
-      moveNoButton();
+  // ❤️ YES CLICK → PLAY MUSIC FROM SPECIFIC TIME
+  yesBtn.addEventListener('click', function () {
+    message.style.display = 'block';
 
-      var scaleValue = Math.max(0.45, 1 - attempts * 0.15);
-      noBtn.style.transform = 'scale(' + scaleValue + ')';
-      noBtn.style.opacity = Math.max(0.35, 1 - attempts * 0.2);
+    audio.currentTime = startTime;
+    audio.play();
 
-      if (attempts >= 3) {
-        noBtn.innerText = 'Yes 💕';
-        noBtn.style.background = '#ff4d6d';
+    // stop music at endTime
+    var stopInterval = setInterval(function () {
+      if (audio.currentTime >= endTime) {
+        audio.pause();
+        clearInterval(stopInterval);
       }
-    }
-
-    noBtn.addEventListener('touchstart', handleNoAttempt);
-    noBtn.addEventListener('pointerdown', handleNoAttempt);
-    noBtn.addEventListener('mouseover', handleNoAttempt);
-
-    yesBtn.addEventListener('click', function () {
-      message.style.display = 'block';
-    });
-  </script>
+    }, 200);
+  });
+</script>
 
 </body>
 </html>
